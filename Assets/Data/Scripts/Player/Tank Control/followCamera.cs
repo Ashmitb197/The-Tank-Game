@@ -22,13 +22,15 @@ public class followCamera : MonoBehaviour
         sensitivity = 50;
         cameraFOV = 60;
         cameraAdditionalOffset = new Vector3(0,0.55f,-2.5f);
+        
     }
 
     void Start()
     {
         mainCamera = transform.Find("Camera").gameObject;
         target = GameObject.Find("Player_Tank");
-        muzzleRef = this.transform.Find("Turret").transform.Find("Muzzle").gameObject;
+        muzzleRef = target.transform.Find("Turret").transform.Find("Muzzle").gameObject;
+        
     }
 
     void FixedUpdate()
@@ -51,11 +53,15 @@ public class followCamera : MonoBehaviour
 
             mainCamera.transform.localPosition = muzzleRef.transform.localPosition;
             cameraFOV = 40;
+            mouseY = Mathf.Clamp(mouseY, 0, 0);
+
 
         }
         else
         {
             mainCamera.transform.localPosition = Vector3.zero + cameraAdditionalOffset;
+            cameraFOV = 60;
+            mouseY = Mathf.Clamp(mouseY, -10, 25);
         }
 
         float horizontalAxis = Input.GetAxis("Mouse X");
@@ -64,8 +70,8 @@ public class followCamera : MonoBehaviour
         mouseX += horizontalAxis * sensitivity;
         mouseY += verticalAxis * sensitivity;
 
-        mouseY = Mathf.Clamp(mouseY, -25, 25);
-        transform.localRotation = Quaternion.Euler(0,mouseX, 0);
+        // mouseY = Mathf.Clamp(mouseY, -10, 25);
+        transform.localRotation = Quaternion.Euler(mouseY,mouseX, 0);
 
     }
 

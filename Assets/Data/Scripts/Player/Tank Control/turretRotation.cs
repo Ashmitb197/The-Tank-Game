@@ -11,6 +11,8 @@ public class turretRotation : MonoBehaviour
     public GameObject[] LaunchersRefrence;
 
     public followCamera cameraScript;
+    public GameObject shootTrailRef;
+    public GameObject bullet;
 
     
     [Header("Input Axis")]
@@ -26,6 +28,9 @@ public class turretRotation : MonoBehaviour
     [Range(0,1)] public float upwardForce = 0.5f;
 
 
+    GameObject bulletShot;
+
+
     // [Header("Script Refrences")]
     // public BulletSpawnScript bulletSpawnScript;
 
@@ -39,7 +44,7 @@ public class turretRotation : MonoBehaviour
         cameraScript = GameObject.Find("CameraPivotPoint").GetComponent<followCamera>();
         // bulletSpawnScript = GameObject.Find("Launchers").GetComponent<BulletSpawnScript>();
         turretRefrence = transform.Find("Turret").gameObject;
-        //muzzlePointRefrence = turretRefrence.transform.Find("rotator").gameObject.transform.Find("mussle").gameObject.transform.Find("musclepoint").gameObject;
+        muzzlePointRefrence = turretRefrence.transform.Find("Muzzle").gameObject.transform.Find("MuzzlePoint").gameObject;
         particleSystemRefrence = GameObject.Find("Particle System");
     }
 
@@ -48,6 +53,7 @@ public class turretRotation : MonoBehaviour
     {
         //shootRay();
         mouseMovement();
+        shootBulletProjectile();
         
     }
 
@@ -64,40 +70,81 @@ public class turretRotation : MonoBehaviour
         //rotationY = Mathf.Clamp(rotationY, turretYClamp.x, turretYClamp.y);
 
         // Apply the rotation to the GameObject.
-        turretRefrence.transform.rotation = Quaternion.Lerp(turretRefrence.transform.rotation,Quaternion.Euler(0, cameraScript.transform.rotation.eulerAngles.y, 0), 0.01f);
+        turretRefrence.transform.rotation = Quaternion.Lerp(turretRefrence.transform.rotation,Quaternion.Euler(this.transform.rotation.x, cameraScript.transform.rotation.eulerAngles.y, this.transform.rotation.z), 0.1f);
     }
 
-    void shootRay()
+    void shootBulletProjectile()
     {
-        RaycastHit hit;
-
-        bool shootRay = Physics.Raycast(muzzlePointRefrence.transform.position, muzzlePointRefrence.transform.forward, out hit, Mathf.Infinity);
+         
         
-       Debug.DrawRay(muzzlePointRefrence.transform.position, muzzlePointRefrence.transform.forward*Mathf.Infinity, shootRay ?Color.green : Color.red);
-        if(shootRay)
+        if(Input.GetButtonDown("Fire1"))
         {
-            Debug.Log("Did Hit: " + hit.collider.gameObject.name);
-
-            if(hit.rigidbody != null && Input.GetButtonDown("Fire1"))
-            {
-                
-                particleSystemRefrence.transform.position = hit.collider.gameObject.transform.position;
-                //hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(, ForceMode.Impulse);
-                hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward*explosionPower + new Vector3(5 ,5,0), ForceMode.Impulse);
-                particleSystemRefrence.GetComponent<ParticleSystem>().Play();
-                //particleSystemRefrence.GetComponent<ParticleSystem>().Stop();
-
-                // for(int i = 0; i<4; i++)
-                // {
-                //     LaunchersRefrence[i].GetComponent<BulletSpawnScript>().SetShouldShoot(true);
-                // }
-                //StartCoroutine(stopShooting());
-
-
-            }
-
+            bulletShot = Instantiate(bullet, muzzlePointRefrence.transform.position, turretRefrence.transform.rotation);
+            
+            this.GetComponent<Rigidbody>().AddForce(muzzlePointRefrence.transform.forward*-50000);
+            
+            
+        }
+        if(bulletShot)
+        {
+            
+            bulletShot.GetComponent<Rigidbody>().AddForce(bulletShot.transform.forward*1000);
+            StartCoroutine(die(bulletShot));
         }
     }
+
+    IEnumerator die(GameObject bullet)
+    {
+        yield return new WaitForSeconds(3.0f);
+        Destroy(bullet);
+    }
+
+    // void shootRay()
+    // {
+    //     RaycastHit hit;
+
+    //     bool shootRay = Physics.Raycast(muzzlePointRefrence.transform.position, muzzlePointRefrence.transform.forward, out hit, Mathf.Infinity);
+        
+    //    Debug.DrawRay(muzzlePointRefrence.transform.position, muzzlePointRefrence.transform.forward*Mathf.Infinity, shootRay ?Color.green : Color.red);
+    //     if(shootRay)
+    //     {
+    //         Debug.Log("Did Hit: " + hit.collider.gameObject.name);
+    //         if(Input.GetButtonDown("Fire1"))
+    //         {
+    //             this.GetComponent<Rigidbody>().AddForce(muzzlePointRefrence.transform.forward*-500000);
+    //             spawnShootTrail(hit);
+    //             if(hit.rigidbody == null)
+    //             {
+                    
+    //                 //particleSystemRefrence.transform.position = hit.collider.gameObject.transform.position;
+    //                 //hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(, ForceMode.Impulse);
+    //                 //hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward*explosionPower + new Vector3(5 ,5,0), ForceMode.Impulse);
+    //                 //particleSystemRefrence.GetComponent<ParticleSystem>().Play();
+    //                 //particleSystemRefrence.GetComponent<ParticleSystem>().Stop();
+
+    //                 // for(int i = 0; i<4; i++)
+    //                 // {
+    //                 //     LaunchersRefrence[i].GetComponent<BulletSpawnScript>().SetShouldShoot(true);
+    //                 // }
+    //                 //StartCoroutine(stopShooting());
+                    
+
+
+
+
+    //             }
+    //             if(hit.transform.gameObject.GetComponent<BuildingHealth>())
+    //             {
+    //                 hit.transform.gameObject.GetComponent<BuildingHealth>().decreaseHealth(5.0f);
+    //             }
+    //         }
+
+
+    //     }
+    // }
+
+
+
 
     // IEnumerator stopShooting()
     // {

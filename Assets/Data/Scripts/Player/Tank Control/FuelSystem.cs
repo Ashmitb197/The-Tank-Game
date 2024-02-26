@@ -28,7 +28,7 @@ public class FuelSystem : MonoBehaviour
     {
         maxAccelerationPower = 400;
         controllerScriptRef = this.GetComponent<TankController>();
-        fuelBar = GameObject.Find("Canvas").transform.Find("Fuel_bar").gameObject.GetComponent<Slider>();
+        fuelBar = GameObject.Find("Canvas").transform.Find("FuelBar").gameObject.GetComponent<Slider>();
         
     }
 
@@ -45,6 +45,8 @@ public class FuelSystem : MonoBehaviour
 
         decreaseFuel();
         EmptyFuel();
+
+        UpdateFuelBar();
     }
 
     public void EmptyFuel()

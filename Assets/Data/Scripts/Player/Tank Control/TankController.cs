@@ -60,7 +60,7 @@ public class TankController : MonoBehaviour
         Accelerate();
         steerHandling();
         brakeHandling();
-        //ApplyWheelMeshUpdate();  
+        ApplyWheelMeshUpdate();  
 
         //DebugPrintCarSpeed();
     }
