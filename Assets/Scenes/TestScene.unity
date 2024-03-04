@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 262.38354, g: 325.1084, b: 430.30957, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -144,6 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   Range: 100
+  playerDetected: 0
 --- !u!4 &142174841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6279852604743435382, guid: b74e42b9e38fb7044a9a8a07ecc97e8c,
@@ -2321,7 +2322,7 @@ PrefabInstance:
     - target: {fileID: 3423134847848944353, guid: 5d551cbe8e2f2194cb1ddc16354ac28c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 247.53
+      value: 213.012
       objectReference: {fileID: 0}
     - target: {fileID: 3423134847848944353, guid: 5d551cbe8e2f2194cb1ddc16354ac28c,
         type: 3}

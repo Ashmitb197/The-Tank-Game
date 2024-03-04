@@ -79,25 +79,15 @@ public class turretRotation : MonoBehaviour
         
         if(Input.GetButtonDown("Fire1"))
         {
-            bulletShot = Instantiate(bullet, muzzlePointRefrence.transform.position, turretRefrence.transform.rotation);
+            Instantiate(bullet, muzzlePointRefrence.transform.position, turretRefrence.transform.rotation);
             
             this.GetComponent<Rigidbody>().AddForce(muzzlePointRefrence.transform.forward*-50000);
             
             
         }
-        if(bulletShot)
-        {
-            
-            bulletShot.GetComponent<Rigidbody>().AddForce(bulletShot.transform.forward*1000);
-            StartCoroutine(die(bulletShot));
-        }
     }
 
-    IEnumerator die(GameObject bullet)
-    {
-        yield return new WaitForSeconds(3.0f);
-        Destroy(bullet);
-    }
+    
 
     // void shootRay()
     // {

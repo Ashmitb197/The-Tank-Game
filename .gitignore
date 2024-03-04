@@ -2,3 +2,5 @@ Logs/
 Library/
 UserSettings/
 *.unitypackage
+*.meta
+Documentations/

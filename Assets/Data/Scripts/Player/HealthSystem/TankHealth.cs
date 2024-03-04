@@ -8,7 +8,7 @@ public class TankHealth : MonoBehaviour
 
     public float maxHealth = 100;
     public float currentHealth;
-    public float maxArmourHealth = 100;
+    public float maxArmourHealth = 50;
     public float currentArmourHealth;
 
     public GameObject HealthUISystem;
@@ -31,6 +31,14 @@ public class TankHealth : MonoBehaviour
     {
         UpdateSliderValue(currentHealth, healthSlider, maxHealth);
         UpdateSliderValue(currentArmourHealth, armourSlider, maxArmourHealth);
+    }
+
+    public void increaseHealth(float health)
+    {
+        currentHealth += health;
+
+        if(currentHealth >= 100)
+            currentHealth = 100;
     }
     void decreaseArmourHealth(float health)
     {
@@ -65,6 +73,19 @@ public class TankHealth : MonoBehaviour
         {
             decreaseArmourHealth(Random.Range(2,5));
         }
+    }
+
+    void OnTriggerEnter(Collider coll)
+    {
+            if(coll.GetComponent<Collider>().tag == "Bullet")
+            {
+                decreaseArmourHealth(Random.Range(10,15));
+            }
+            else if(coll.GetComponent<Collider>().tag == "Mine")
+            {
+                decreaseArmourHealth(100);
+            }
+
     }
 
     void UpdateSliderValue(float value, Slider sliderType, float maxValue)

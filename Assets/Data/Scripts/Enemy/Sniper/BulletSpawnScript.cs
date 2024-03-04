@@ -5,28 +5,50 @@ using UnityEngine;
 public class BulletSpawnScript : MonoBehaviour
 {
 
-    public Transform target;
+    public GameObject target;
     public float Range = 40;
 
+    public bool playerDetected;
 
-    void Start()
+
+    void Awake()
     {
-        target = transform.Find("Player_Tank");
+        target = GameObject.Find("Player_Tank");
+        playerDetected = false;
     }
 
 
     void Update()
     {
-
-        if(Vector3.Distance(target.position, this.transform.position) < Range)
+        //Debug.Log(Vector3.Distance( target.transform.position, this.transform.position));
+        if(Vector3.Distance(target.transform.position, this.transform.position) < Range)
         {
-            Vector3 dir = target.position - this.transform.position;
-            Quaternion lookRotation = Quaternion.LookRotation(dir);
-            Vector3 rotation = lookRotation.eulerAngles;
-
-            this.transform.rotation = Quaternion.Euler(0,rotation.y,0);
+            playerDetected = true;
+        }
+        else{
+            playerDetected = false;
         }
 
+        UpdateRotation();
+    }
+
+    void UpdateRotation()
+    {
+        if(!playerDetected)
+           UpdateRotationOnPlayerNotDetected();
+
+        if(playerDetected)
+            UpdateRotationOnPlayerDetection();
+    }
+
+    void UpdateRotationOnPlayerNotDetected()
+    {
+        //this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(0,this.transform.rotation.y,0), 0.01f);
+        this.transform.Rotate(Vector3.Lerp(new Vector3(0,0,0), new Vector3(0,90,0), 0.01f));
+    }
+    void UpdateRotationOnPlayerDetection()
+    {
+        this.transform.LookAt(target.transform, Vector3.up);
     }
 
     void OnDrawGizmosSelected()

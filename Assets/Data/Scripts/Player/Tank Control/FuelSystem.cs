@@ -67,6 +67,15 @@ public class FuelSystem : MonoBehaviour
             }
 
     }
+
+    public void refuel(float fuel)
+    {
+        currentFuel += fuel;
+
+        if(currentFuel >= 100)
+            currentFuel = 100;
+
+    }
     public void UpdateFuelBar()
     {
         fuelBar.value = currentFuel;
