@@ -14,13 +14,18 @@ public class EnemyTankMovement : MonoBehaviour
     public GameObject target;
     public GameObject bullet;
 
-    public float VechicleAcceleration;
-
     public GameObject turretRef;
 
     public GameObject muzzlePointRefrence;
     float lastTime = 0;
     float updateTime = 3.0f;
+
+    [Header("Vehichle Working")]
+    public float forwardAmount;
+    public float turnAmount;
+
+    public float maxSteerAngle = 45;
+    public float VechicleAcceleration;
 
     // Start is called before the first frame update
 
@@ -52,17 +57,31 @@ public class EnemyTankMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        Accelerate();
+        steerHandling();
         ApplyWheelMeshUpdate();
         UpdateLookRotation();
     }
-
-    public void Accelerate(float distance)
+    public void setInputs(float forwardAmount, float turnAmount)
+    {
+        this.forwardAmount = forwardAmount;
+        this.turnAmount = turnAmount;
+    }
+    public void Accelerate()
     {
 
         for(int i = 0; i< powerTyres.Count; i++)
         {
-            powerTyres[i].motorTorque = distance * VechicleAcceleration;
+            powerTyres[i].motorTorque = forwardAmount * VechicleAcceleration;
             
+        }
+    }
+
+    void steerHandling()
+    {
+        for(int i = 0; i<steerTyres.Count; i++)
+        {
+            steerTyres[i].steerAngle = turnAmount*maxSteerAngle;
         }
     }
 

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1768745438}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: StartPoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8698144602571002287}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EndPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 856365951878880403}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: StartPoint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 275467839107758433}
   - component: {fileID: 3357368875350945089}
   - component: {fileID: 116890509361345813}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TriggerPoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -20,6 +20,7 @@ public class TankController : MonoBehaviour
 
     [Header("Vehicle Details")]
     public float accelerationPower = 400;
+    public float maxAccelerationPower = 400000;
     public float maxSteerAngle = 30;
     public float brakeForce = 160000;
     public float currentSpeed;

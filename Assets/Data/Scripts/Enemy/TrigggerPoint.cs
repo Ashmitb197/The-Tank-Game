@@ -17,6 +17,7 @@ public class TrigggerPoint : MonoBehaviour
 
     public float time;
 
+
     void Start()
     {
         hasSpawned = false;
@@ -32,32 +33,32 @@ public class TrigggerPoint : MonoBehaviour
     void FixedUpdate()
     {
         
-        if(spawnedTank)
-            EnemyTankMovement();
+        // if(spawnedTank)
+        //     EnemyTankMovement();
 
         //if(spawnedTank.transform.position.z != endPoint.position.z) spawnedTank.transform.Translate();
 
     }
 
-    void EnemyTankMovement()
-    {
-        Vector3 dirToEndPoint = Vector3.Normalize( spawnedTank.transform.position-endPoint.position);
-        float direction = Vector3.Dot(endPoint.forward, dirToEndPoint);
+    // void EnemyTankMovement()
+    // {
+    //     Vector3 dirToEndPoint = Vector3.Normalize( spawnedTank.transform.position-endPoint.position);
+    //     float direction = Vector3.Dot(endPoint.forward, dirToEndPoint);
 
-        Debug.Log(direction);
+    //     Debug.Log(direction);
 
-        EnemyTankMovement ETankScript = spawnedTank.GetComponent<EnemyTankMovement>();
+    //     EnemyTankMovement ETankScript = spawnedTank.GetComponent<EnemyTankMovement>();
 
-        if(direction<-0.05f || direction >0.05f)
-        {
-            ETankScript.Accelerate(-direction);
-        }
-        else
-        {  
-            ETankScript.brakeHandling();
+    //     if(direction<-0.05f || direction >0.05f)
+    //     {
+    //         ETankScript.Accelerate(-direction);
+    //     }
+    //     else
+    //     {  
+    //         ETankScript.brakeHandling();
         
-        }
-    }
+    //     }
+    // }
     void OnTriggerEnter(Collider coll)
     {
         

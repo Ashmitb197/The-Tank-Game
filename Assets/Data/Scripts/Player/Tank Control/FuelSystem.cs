@@ -26,7 +26,6 @@ public class FuelSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxAccelerationPower = 400;
         controllerScriptRef = this.GetComponent<TankController>();
         fuelBar = GameObject.Find("Canvas").transform.Find("FuelBar").gameObject.GetComponent<Slider>();
         
@@ -51,7 +50,7 @@ public class FuelSystem : MonoBehaviour
 
     public void EmptyFuel()
     {
-        controllerScriptRef.accelerationPower = (currentFuel<1)?0:maxAccelerationPower;
+        controllerScriptRef.accelerationPower = (currentFuel<1)?0:controllerScriptRef.maxAccelerationPower;
     }
 
     public void decreaseFuel()
