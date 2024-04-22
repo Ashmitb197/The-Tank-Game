@@ -1,15 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
+
+public enum SelectedVehicle
+{
+    Tank,
+    Car,
+};
 public class TrigggerPoint : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public Transform[] startPoints;
-    public Transform startPoint;
-    public Transform endPoint;
-    public GameObject Enemy_Tank;
+    public List<Transform> startPoints;
+    public List<GameObject> Vehicles;
+    
+    
+    public bool SpawnAtAllPoints;
+    public bool SpawnBothVehicle;
+
+    public SelectedVehicle selectedVehicle;
 
     GameObject spawnedTank;
 
@@ -21,12 +32,6 @@ public class TrigggerPoint : MonoBehaviour
     void Start()
     {
         hasSpawned = false;
-        startPoints = new Transform[2];
-        startPoints[0] = transform.Find("StartPoint1");
-        startPoints[1] = transform.Find("StartPoint2");
-        endPoint = transform.Find("EndPoint");
-
-        
         
     }
 
@@ -67,23 +72,52 @@ public class TrigggerPoint : MonoBehaviour
         {
             Debug.Log("Player Coll");
 
-            spawnedTank = SpawnTank();
+            SpawnTank();
             // if(!hasSpawned)
             // {
             //     spawnedTank = SpawnTank();
             //     hasSpawned = !hasSpawned;
             // }
+            Destroy(gameObject);
         }
 
             
     }
 
-    GameObject SpawnTank()
+    void SpawnTank()
     {
-        startPoint = startPoints[Random.Range(0,2)];
-        GameObject spawnedTank = Instantiate(Enemy_Tank, startPoint.position, startPoint.rotation);
-        return spawnedTank;
+        if(!SpawnAtAllPoints)
+        {
+            //if spawn both vehicles = false;
+
+            Transform startPoint = startPoints[Random.Range(0,(startPoints.Count-1))];
+
+            if(!SpawnBothVehicle)
+            {
+                Instantiate(Vehicles[(int)selectedVehicle], startPoint.position, startPoint.rotation);
+            }
+            else
+            {
+                Instantiate(Vehicles[Random.Range(0,(Vehicles.Count-1))], startPoint.position, startPoint.rotation);
+            }
+        }
+        else
+        {
+            for(int i = 0; i<startPoints.Count; i++)
+            {
+                //if spawn both vehicles = false
+                if(!SpawnBothVehicle)
+                {
+                    Instantiate(Vehicles[(int)selectedVehicle], startPoints[i].position, startPoints[i].rotation);
+                }
+                else
+                {
+                    Instantiate(Vehicles[Random.Range(0,(Vehicles.Count-1))], startPoints[i].position, startPoints[i].rotation);
+                }
+            }
+        }
     }
+
 
 
 }

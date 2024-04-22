@@ -24,7 +24,7 @@ public class ETankAIDriver : MonoBehaviour
     public bool right45Hit;
     
     public float rayDistance;
-    
+    public Vector3 downVector;
     public LayerMask collisionPreset;
 
     // Start is called before the first frame update
@@ -48,7 +48,7 @@ public class ETankAIDriver : MonoBehaviour
         setTargetPosition(targetPositionTransform.position);
 
 
-        float distToTarget = Vector3.Distance(this.transform.position, targetPosition);
+        float distToTarget = Vector3.Distance(targetPosition, this.transform.position);
 
         Vector3 dirToTarget = (targetPosition - this.transform.position).normalized;
         float dotProduct  = Vector3.Dot(transform.forward, dirToTarget);
@@ -74,20 +74,20 @@ public class ETankAIDriver : MonoBehaviour
 
                 if(angletoDir > 0f)
                 {
-                    turnAmount = Mathf.Lerp(turnAmount, 1 ,0.05f);
+                    turnAmount = Mathf.Lerp(turnAmount, 1 ,0.01f);
                 }
                 else
                 {
-                    turnAmount = Mathf.Lerp(turnAmount, -1 ,0.05f);;
+                    turnAmount = Mathf.Lerp(turnAmount, -1 ,0.01f);;
                 }
 
                 
             
             }
-            else
-            {
-                forwardAmount = 0f;
-                turnAmount = 0f;
+
+            else{
+                forwardAmount = 0;
+                turnAmount = 0;
             }
         
         }
@@ -122,6 +122,15 @@ public class ETankAIDriver : MonoBehaviour
             forwardAmount = -5;
             turnAmount = 0;
         }
+        if(!forwardHit && (left45Hit && rightHit))
+        {
+            forwardAmount = 1;
+            turnAmount = 0;
+        }
+        if(!forwardHit && (left45Hit || right45Hit))
+        {
+            forwardAmount = 1;
+        }
 
         enemyTankMovement.setInputs(forwardAmount, turnAmount);
     }
@@ -130,22 +139,24 @@ public class ETankAIDriver : MonoBehaviour
     {
         RaycastHit hit;
 
-        forwardHit = Physics.Raycast(transform.position, transform.forward, out hit, rayDistance-0.5f, collisionPreset);
-        backHit = Physics.Raycast(transform.position, transform.forward, out hit, -rayDistance, collisionPreset);
+        
 
-        left45Hit = Physics.Raycast(transform.position, -(transform.right-transform.forward).normalized, rayDistance, collisionPreset);
-        right45Hit = Physics.Raycast(transform.position, (transform.right+transform.forward).normalized, rayDistance, collisionPreset);
+        forwardHit = Physics.Raycast(transform.position+downVector, transform.forward, out hit, rayDistance, collisionPreset);
+        backHit = Physics.Raycast(transform.position+downVector, transform.forward, out hit, -rayDistance, collisionPreset);
 
-        rightHit = Physics.Raycast(transform.position, transform.right, out hit, rayDistance, collisionPreset);
-        leftHit = Physics.Raycast(transform.position, -transform.right, out hit, rayDistance, collisionPreset);
+        left45Hit = Physics.Raycast(transform.position+downVector, -(transform.right-transform.forward).normalized, rayDistance*2f, collisionPreset);
+        right45Hit = Physics.Raycast(transform.position+downVector, (transform.right+transform.forward).normalized, rayDistance*2f, collisionPreset);
+
+        rightHit = Physics.Raycast(transform.position+downVector, transform.right, out hit, rayDistance, collisionPreset);
+        leftHit = Physics.Raycast(transform.position+downVector, -transform.right, out hit, rayDistance, collisionPreset);
        
 
-        Debug.DrawRay(transform.position, transform.forward*(rayDistance-0.5f), forwardHit?Color.red:Color.green);
-        Debug.DrawRay(transform.position, transform.forward*-rayDistance, backHit?Color.red:Color.green);
-        Debug.DrawRay(transform.position, transform.right*rayDistance, rightHit?Color.red:Color.green);
-        Debug.DrawRay(transform.position, transform.right*-rayDistance, leftHit?Color.red:Color.green);
-        Debug.DrawRay(transform.position, (transform.right-transform.forward).normalized* -rayDistance, left45Hit?Color.red:Color.green);//left
-        Debug.DrawRay(transform.position, (transform.right+transform.forward).normalized* rayDistance, right45Hit?Color.red:Color.green);
+        Debug.DrawRay(transform.position+downVector, transform.forward*(rayDistance), forwardHit?Color.red:Color.green);
+        Debug.DrawRay(transform.position+downVector, transform.forward*-rayDistance, backHit?Color.red:Color.green);
+        Debug.DrawRay(transform.position+downVector, transform.right*rayDistance, rightHit?Color.red:Color.green);
+        Debug.DrawRay(transform.position+downVector, transform.right*-rayDistance, leftHit?Color.red:Color.green);
+        Debug.DrawRay(transform.position+downVector, (transform.right-transform.forward).normalized* (2.0f*-rayDistance), left45Hit?Color.red:Color.green);//left
+        Debug.DrawRay(transform.position+downVector, (transform.right+transform.forward).normalized* (2.0f*rayDistance), right45Hit?Color.red:Color.green);
     }
 
     public void setTargetPosition(Vector3 targetPosition)

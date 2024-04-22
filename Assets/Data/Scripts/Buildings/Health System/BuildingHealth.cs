@@ -7,6 +7,8 @@ public class BuildingHealth : MonoBehaviour
     public float maxHealth = 100;
     public float currentHealth;
 
+    public bool IsCountedAsDead;
+
     //For Debugging purpose
     public Rigidbody rigidBody;
 
@@ -21,8 +23,9 @@ public class BuildingHealth : MonoBehaviour
 
     void Start()
     {
-        rigidBody = this.GetComponent<Rigidbody>();
-        rigidBody.isKinematic = true;
+        IsCountedAsDead = false;
+        // rigidBody = this.GetComponent<Rigidbody>();
+        // rigidBody.isKinematic = true;
     }
     public void decreaseHealth(float decreaseHealth)
     {
@@ -31,16 +34,26 @@ public class BuildingHealth : MonoBehaviour
         if(currentHealth < 0)
         {
             currentHealth = 0;
-            Die();
+            //Die();
         
         }
 
     }
 
-    void Die()
+    public bool Die()
     {
-        this.GetComponent<Collider>().isTrigger = true;
-        rigidBody.isKinematic = false;
+        
+        // this.GetComponent<Collider>().isTrigger = true;
+        // rigidBody.isKinematic = false;
+        if(currentHealth == 0)
+        {
+            this.GetComponent<Animator>().SetBool("IsDead", true);
+            return true;
+        
+        }
+        
+        else 
+            return false;
     }
 
     // void FixedUpdate()
@@ -56,6 +69,13 @@ public class BuildingHealth : MonoBehaviour
         if(coll.collider)
         {
             decreaseHealth(Random.Range(3,5));
+        }
+    }
+    void OnTriggerEnter(Collider coll)
+    {
+        if(coll.tag == "Shell")
+        {
+            decreaseHealth(Random.Range(10,15));
         }
     }
 }

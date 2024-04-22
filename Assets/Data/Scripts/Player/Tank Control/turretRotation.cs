@@ -7,11 +7,9 @@ public class turretRotation : MonoBehaviour
     [Header("GameObject Refrences")]
     public GameObject turretRefrence;
     public GameObject muzzlePointRefrence;
-    public GameObject particleSystemRefrence;
-    public GameObject[] LaunchersRefrence;
 
     public followCamera cameraScript;
-    public GameObject shootTrailRef;
+
     public GameObject bullet;
 
     
@@ -45,7 +43,7 @@ public class turretRotation : MonoBehaviour
         // bulletSpawnScript = GameObject.Find("Launchers").GetComponent<BulletSpawnScript>();
         turretRefrence = transform.Find("Turret").gameObject;
         muzzlePointRefrence = turretRefrence.transform.Find("Muzzle").gameObject.transform.Find("MuzzlePoint").gameObject;
-        particleSystemRefrence = GameObject.Find("Particle System");
+
     }
 
     // Update is called once per frame
@@ -53,39 +51,39 @@ public class turretRotation : MonoBehaviour
     {
         //shootRay();
         mouseMovement();
-        shootBulletProjectile();
         
     }
 
     void mouseMovement()
     {
-        mouseX = Input.GetAxis("Mouse X");
-        mouseY = Input.GetAxis("Mouse Y");
+        // mouseX = Input.GetAxis("Mouse X");
+        // mouseY = Input.GetAxis("Mouse Y");
 
-        rotationY += mouseX * cameraScript.sensitivity;
-        rotationX -= mouseY * cameraScript.sensitivity;
+        // rotationY += mouseX * cameraScript.sensitivity;
+        // rotationX -= mouseY * cameraScript.sensitivity;
 
         // Clamp the pitch angle to avoid over-rotation.
         //rotationX = Mathf.Clamp(rotationX, turretXClamp.x, turretXClamp.y);
         //rotationY = Mathf.Clamp(rotationY, turretYClamp.x, turretYClamp.y);
 
         // Apply the rotation to the GameObject.
-        turretRefrence.transform.rotation = Quaternion.Lerp(turretRefrence.transform.rotation,Quaternion.Euler(this.transform.rotation.x, cameraScript.transform.rotation.eulerAngles.y, this.transform.rotation.z), 0.1f);
+
+        if(this.GetComponent<ammoMech>().IsSecondaryWeaponInUse)
+        {
+            turretRefrence.transform.rotation = Quaternion.Lerp(turretRefrence.transform.rotation,this.transform.localRotation, 0.1f);
+        }
+
+        else
+        {
+            turretRefrence.transform.rotation = Quaternion.Lerp(turretRefrence.transform.rotation,Quaternion.Euler(0, cameraScript.transform.rotation.eulerAngles.y, 0), 0.5f);    
+        }
+            
+        //turretRefrence.transform.rotation = Quaternion.Euler(0, cameraScript.transform.rotation.eulerAngles.y, 0);
+
+
     }
 
-    void shootBulletProjectile()
-    {
-         
-        
-        if(Input.GetButtonDown("Fire1"))
-        {
-            Instantiate(bullet, muzzlePointRefrence.transform.position, turretRefrence.transform.rotation);
-            
-            this.GetComponent<Rigidbody>().AddForce(muzzlePointRefrence.transform.forward*-50000);
-            
-            
-        }
-    }
+    
 
     
 

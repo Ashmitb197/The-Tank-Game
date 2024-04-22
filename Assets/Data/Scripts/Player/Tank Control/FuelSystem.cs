@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class FuelSystem : MonoBehaviour
 {
     public TankController controllerScriptRef;
-    public const float MaxFuel =100;
+    public const float MaxFuel = 100;
     public float currentFuel;
     public float lastTime;
     public float UpdatedTime;
@@ -15,6 +15,7 @@ public class FuelSystem : MonoBehaviour
 
     public float maxAccelerationPower;
 
+    public bool EmergencyFuel;
 
 
     FuelSystem()
@@ -26,8 +27,9 @@ public class FuelSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EmergencyFuel = true;
         controllerScriptRef = this.GetComponent<TankController>();
-        fuelBar = GameObject.Find("Canvas").transform.Find("FuelBar").gameObject.GetComponent<Slider>();
+        fuelBar = GameObject.Find("HUD").transform.Find("FuelBar").transform.Find("Slider").GetComponent<Slider>();
         
     }
 
@@ -46,6 +48,8 @@ public class FuelSystem : MonoBehaviour
         EmptyFuel();
 
         UpdateFuelBar();
+
+        ActivateEmergencyFuel();
     }
 
     public void EmptyFuel()
@@ -77,7 +81,22 @@ public class FuelSystem : MonoBehaviour
     }
     public void UpdateFuelBar()
     {
+        fuelBar.maxValue = MaxFuel;
         fuelBar.value = currentFuel;
 
     }
+
+    void ActivateEmergencyFuel()
+    {
+        if(Input.GetButtonDown("Emergency Fuel") && EmergencyFuel)
+        {
+            currentFuel = MaxFuel;
+
+            EmergencyFuel = !EmergencyFuel;
+        }
+
+
+    }
+
+    
 }

@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Mine
+  - Enemy
+  - LauncherShell
+  - Bullet
+  - Shell
+  - Dead
+  - Health
+  - Ammo
   layers:
   - Default
   - TransparentFX
@@ -12,7 +20,7 @@ TagManager:
   - Water
   - UI
   - Bullet
-  - 
+  - Enemy
   - 
   - 
   - 

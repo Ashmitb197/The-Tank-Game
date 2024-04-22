@@ -5,6 +5,9 @@ using UnityEngine;
 public class TankController : MonoBehaviour
 {
     
+    [Header("Renderer/Trail Effects")]
+    public List<TrailRenderer> tyreMarks;
+
 
     [Header("Wheel Colliders")]
     public List<WheelCollider> powerTyres;
@@ -24,11 +27,28 @@ public class TankController : MonoBehaviour
     public float maxSteerAngle = 30;
     public float brakeForce = 160000;
     public float currentSpeed;
+    public float jumpForce;
     public float maxSpeed;
 
+    public Vector3 COM;
+
+    [Header("Health Info")]
+    public TankHealth tankHealthRef;
+
+
+    public bool isOnGround;
 
     void Start()
     {
+
+        tankHealthRef = this.GetComponent<TankHealth>();
+
+        COM = transform.Find("COM").localPosition;
+
+        this.GetComponent<Rigidbody>().centerOfMass = COM;
+
+        tyreMarks[0] = transform.Find("Wheels").transform.Find("SkidMarks").transform.Find("LeftSkid").gameObject.GetComponent<TrailRenderer>();
+        tyreMarks[1] = transform.Find("Wheels").transform.Find("SkidMarks").transform.Find("RightSkid").gameObject.GetComponent<TrailRenderer>();
 
         //For Wheel Colliders
         powerTyres[0] = transform.Find("Wheels").transform.Find("Colliders").transform.Find("RL_Wheel").gameObject.GetComponent<WheelCollider>();
@@ -45,6 +65,9 @@ public class TankController : MonoBehaviour
         steerTyresMesh[1] = transform.Find("Wheels").transform.Find("Meshes").transform.Find("FR_Wheel").gameObject;
 
 
+
+
+
     }
     // Start is called before the first frame update
     // void Start()
@@ -55,32 +78,45 @@ public class TankController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-        gettingInput();
+
+        gettingInput(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+
         //PlayerRef.SetActive(false);
         Accelerate();
         steerHandling();
         brakeHandling();
         ApplyWheelMeshUpdate();  
 
+        checkDrift();
         //DebugPrintCarSpeed();
+        IsTankGrounded();
+
+        Jump();
     }
 
-    void gettingInput()
+    void gettingInput(float steerInput, float accelerateInput)
     {
-        accelerateInput = Input.GetAxis("Vertical");
-        steerInput = Input.GetAxis("Horizontal");
+        this.accelerateInput = accelerateInput;
+        this.steerInput = steerInput;
         brakeInput = Input.GetKey(KeyCode.Space);
     }
 
     void Accelerate()
     {
-        float currentaccelerationPower = (GetVehicleSpeed() < maxSpeed)? accelerationPower : 0;
+        //float currentaccelerationPower = (GetVehicleSpeed() < maxSpeed)? accelerationPower : 0;
         for(int i = 0; i< powerTyres.Count; i++)
         {
-            powerTyres[i].motorTorque = accelerateInput * currentaccelerationPower;
+            powerTyres[i].motorTorque = accelerateInput* (accelerationPower);
             
         }
+        
+    }
+
+    void Jump()
+    {
+        if(Input.GetKeyDown("j") && IsTankGrounded())
+            this.GetComponent<Rigidbody>().AddForce(transform.up *(jumpForce));
     }
 
     void steerHandling()
@@ -138,10 +174,54 @@ public class TankController : MonoBehaviour
         return currentSpeed;
     }
 
-    public float GetSpeedRatio()
+    // public float GetSpeedRatio()
+    // {
+    //     var power = Mathf.Clamp(accelerateInput,0.5f, 1f);
+    //     return GetVehicleSpeed()*power/maxSpeed;
+    // }
+
+    //Trail Renderer For Tire Skid
+
+    private void checkDrift()
     {
-        var power = Mathf.Clamp(accelerateInput,0.5f, 1f);
-        return GetVehicleSpeed()*power/maxSpeed;
+        if(this.GetComponent<Rigidbody>().velocity.magnitude > 0 && brakeInput && IsTankGrounded())
+        {
+            StartEmitting();
+        }
+        else
+        {
+            StopEmitting();
+        }
+    }
+
+    private void StartEmitting()
+    {
+        foreach (TrailRenderer i in tyreMarks)
+        {
+            i.emitting =true;
+        }
+    }
+
+    private void StopEmitting()
+    {
+        foreach (TrailRenderer i in tyreMarks)
+        {
+            i.emitting =false;
+        }
+    }
+
+
+    //Particle System for tire dust
+
+
+
+    bool IsTankGrounded()
+    {
+
+        isOnGround = Physics.Raycast(transform.position, -this.transform.up, 2);
+        Debug.DrawRay(transform.position, transform.up * -2, Color.white);
+
+        return isOnGround;
     }
 
 }

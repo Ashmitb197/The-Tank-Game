@@ -15,17 +15,24 @@ public class EnemyTankMovement : MonoBehaviour
     public GameObject bullet;
 
     public GameObject turretRef;
+    public float turretRotationSpeed;
 
     public GameObject muzzlePointRefrence;
     float lastTime = 0;
-    float updateTime = 3.0f;
+    public float updateTime;
 
-    [Header("Vehichle Working")]
+    [Header("Vehichle Settings")]
     public float forwardAmount;
     public float turnAmount;
 
     public float maxSteerAngle = 45;
     public float VechicleAcceleration;
+    public bool canTurretRotate;
+
+
+    [Header("Sounds")]
+    public AudioSource reloadSound;
+    public AudioSource shootSound;
 
     // Start is called before the first frame update
 
@@ -48,19 +55,26 @@ public class EnemyTankMovement : MonoBehaviour
         steerTyresMesh[0] = transform.Find("Wheels").transform.Find("Meshes").transform.Find("FL_Wheel").gameObject;
         steerTyresMesh[1] = transform.Find("Wheels").transform.Find("Meshes").transform.Find("FR_Wheel").gameObject;
 
-        turretRef = this.transform.Find("Turret").gameObject;
-        target = GameObject.Find("Player_Tank");
-        muzzlePointRefrence = turretRef.transform.Find("Muzzle").gameObject.transform.Find("MuzzlePoint").gameObject;
+        //turretRef = this.transform.Find("Turret").transform.Find("TurretHand").transform.Find("TurretRotor").gameObject;
+        
+        //muzzlePointRefrence = turretRef.transform.Find("MuzzlePoint").gameObject;
+
+
+        // reloadSound = this.transform.Find("Reload").GetComponent<AudioSource>();
+        // shootSound = this.transform.Find("Shoot").GetComponent<AudioSource>();
 
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        target = GameObject.FindWithTag("Player");
+        if(target)
+            UpdateLookRotation();
         Accelerate();
         steerHandling();
         ApplyWheelMeshUpdate();
-        UpdateLookRotation();
+        
     }
     public void setInputs(float forwardAmount, float turnAmount)
     {
@@ -90,7 +104,7 @@ public class EnemyTankMovement : MonoBehaviour
         
         for(int i = 0; i<powerTyres.Count; i++)
         {
-            powerTyres[i].brakeTorque = 5000;
+            powerTyres[i].brakeTorque = 5000000;
         }
       
     }
@@ -100,9 +114,11 @@ public class EnemyTankMovement : MonoBehaviour
     void UpdateLookRotation()
     {
         
-        if(Vector3.Distance(target.transform.position, this.transform.position)<10)
+        if((Vector3.Distance(target.transform.position, this.transform.position)<20) && canTurretRotate)
         {
             turretRef.transform.LookAt(target.transform);
+            // Vector3 targetDirection = target.transform.position - turretRef.transform.position;
+            // turretRef.transform.localRotation =  Quaternion.LookRotation(targetDirection);
             
             shootBullet();
         }
@@ -113,10 +129,18 @@ public class EnemyTankMovement : MonoBehaviour
        
         if(Time.time >lastTime + updateTime )
         {
-            Instantiate(bullet, muzzlePointRefrence.transform.position, turretRef.transform.rotation);
+            Instantiate(bullet, muzzlePointRefrence.transform.position, muzzlePointRefrence.transform.rotation);
+            //StartCoroutine(playShootAndReloadSound());
             lastTime = Time.time;         
         }
     }
+
+    // IEnumerator playShootAndReloadSound()
+    // {
+    //     shootSound.Play();
+    //     yield return new WaitForSeconds(1.750f);
+    //     reloadSound.Play();
+    // }
 
      void ApplyWheelMeshUpdate()
     {

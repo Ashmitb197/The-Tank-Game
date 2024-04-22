@@ -22,6 +22,11 @@ public class GarageMechanics : MonoBehaviour
         {
             coll.transform.gameObject.GetComponent<TankHealth>().increaseHealth(Random.Range(25,30));
             coll.transform.gameObject.GetComponent<FuelSystem>().refuel(100);
+            coll.transform.gameObject.GetComponent<FuelSystem>().EmergencyFuel = true;
+
+            coll.transform.gameObject.GetComponent<ammoMech>().currentMAG = coll.transform.gameObject.GetComponent<ammoMech>().maxMAG;
+
+
         }
     }
 }
